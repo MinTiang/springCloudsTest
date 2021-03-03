@@ -1,0 +1,15 @@
+server:
+   port: 10000
+spring:
+   application:
+      name:eurekaServer
+eureka:
+   client:
+      # 是否将本服务注册到 eureka ，默认：true
+      registerWithEureka: false
+      # 是否从其他eureka server 获取注册列表，单server时使用false
+      fetchRegistry: false
+      serviceUrl:
+         defaultZone: http://localhost:${server.port}/eureka/
+      
+      
