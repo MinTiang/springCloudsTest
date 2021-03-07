@@ -1,5 +1,5 @@
 server:
-   port: 9000
+   port: 9003
    tomcat:
       max-threads: 100
       uri-encoding: UTF-8
@@ -8,9 +8,9 @@ spring:
    application:
       name: business-provider
    datasource:
-      url: jdbc:mysql://192.168.197.128:3306/xuejiexiong
+      url: jdbc:mysql://127.0.0.1:3306/mintiang
       username: root
-      password: Xuejie123!
+      password: 123456
       #driverClassName: com.mysql.jdbc.Driver
       max-active: 20
       max-idle: 8
@@ -28,9 +28,13 @@ eureka:
       # 是否从其他eureka server 获取注册列表，单server时使用false
       #fetch-registry: false
       serviceUrl:
-         defaultZone: http://localhost:10000/eureka/
-   #instance:
+         defaultZone: http://xue1:10000/eureka/,http://xue2:10001/eureka/
+   instance:
       # 将自己的ip注册到Eureka Server上   如果不配置该属性  则默认为false且表示注册微服务所在操作系统的hostname到Eureka Server
-      #preferIpAddress: true
+      preferIpAddress: true
       #instance-id: ${spring.application.name}:${server.port}
+      # 每间隔1s，向服务端发送一次心跳，证明自己依然”存活“
+      lease-renewal-interval-in-seconds: 5
+      # 告诉服务端，如果我2s之内没有给你发心跳，就代表我“死”了，将我踢出掉。
+      lease-expiration-duration-in-seconds: 15
       

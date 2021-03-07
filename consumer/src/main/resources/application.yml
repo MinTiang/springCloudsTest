@@ -1,5 +1,5 @@
 server:
-   port: 8000
+   port: 8002
    tomcat:
       max-threads: 100
       uri-encoding: UTF-8
@@ -7,15 +7,58 @@ server:
 spring:
    application:
       name: consumer
-      
+   cloud:
+      loadbalancer:
+         retry:
+            enabled: true
+   redis:
+      database: 0
+      host: localhost
+      port: 6379
+      password:
+      #链接超时  ms
+      timeout: 10000
+      pool:
+         #最大连接数 负数无限制
+         max-active: 10
+         #连接池最大阻塞时间  ms 负数
+         max-wait: -1
+         #最大空闲连接数
+         max-idle: 8
+         #最小空闲连接数
+         min-idle: 0
+         
+   
 eureka:
    client:
       # 是否从其他eureka server 获取注册列表，单server时使用false
-      #fetch-registry: false
+      #fetch-registry: true
+      registryFetchIntervalSeconds: 5
       serviceUrl:
-         defaultZone: http://localhost:10000/eureka/
-   #instance:
+         defaultZone: http://xue1:10000/eureka/,http://xue2:10001/eureka/
+
+   instance:
       # 将自己的ip注册到Eureka Server上   如果不配置该属性  则默认为false且表示注册微服务所在操作系统的hostname到Eureka Server
-      #preferIpAddress: true
+      preferIpAddress: true
       #instance-id: ${spring.application.name}:${server.port}
-      
+      # 每间隔1s，向服务端发送一次心跳，证明自己依然”存活“
+      lease-renewal-interval-in-seconds: 5
+      # 告诉服务端，如果我2s之内没有给你发心跳，就代表我“死”了，将我踢出掉。
+      lease-expiration-duration-in-seconds: 15
+#这样的ribbon是全局配置      
+ribbon:
+   # 请求超时时间
+   ConnectTimeout: 10000
+   # 读取超时时间
+   ReadTimeout: 10000
+   #发送失败是否重试
+   OkToRetryOnAllOperations: true
+   #切换几次节点重试
+   MaxAutoRetriesNextServer: 1
+   #节点重试次数  每个节点先请求一次，再请求配置的次数。例如：MaxAutoRetries =1 那么算上本来的那一次，在这个节点最多就请求了两次，配合切换节点再重试，次数就非常多了
+   MaxAutoRetries: 1
+# 这种配置可以针对某种类型的服务配置参数   
+business-provider:
+   ribbon:
+      ConnectTime: 3000
+      ReadTimeout: 3000

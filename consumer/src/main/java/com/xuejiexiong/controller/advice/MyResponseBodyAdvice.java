@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
 //@Component
-@ControllerAdvice
+//@ControllerAdvice
 public class MyResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
 	@Override

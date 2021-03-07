@@ -1,10 +1,17 @@
 package com.xuejiexiong.vo;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class RestResponse<T> {
+public class RestResponse<T> implements Serializable{
+	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private String state = "ok";
 

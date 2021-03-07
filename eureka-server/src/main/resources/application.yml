@@ -1,15 +1,60 @@
-server:
-   port: 10000
 spring:
    application:
-      name:eurekaServer
+      name: eureka-server
+   profiles:
+      active: xue3
+   #开启下面的spring security 配置，就需要登录了。在eureka client 需要这么配置，才能把服务注册上去  defaultZone=http://user:1234567@xue1:10000/eureka/
+   #security:
+      #basic: 
+         #enabled: true
+      #user:
+         #name: user
+         #password: 123456
 eureka:
+   instance:
+      hostname: ${spring.profiles.active}
+      # 每间隔1s，向服务端发送一次心跳，证明自己依然”存活“
+      lease-renewal-interval-in-seconds: 3
+      # 告诉服务端，如果我2s之内没有给你发心跳，就代表我“死”了，将我踢出掉。
+      lease-expiration-duration-in-seconds: 7
    client:
       # 是否将本服务注册到 eureka ，默认：true
-      registerWithEureka: false
+      registerWithEureka: true
       # 是否从其他eureka server 获取注册列表，单server时使用false
       fetchRegistry: false
+   server:
+      #eureka server刷新readCacheMap的时间，注意，client读取的是readCacheMap，这个时间决定了多久会把readWriteCacheMap的缓存更新到readCacheMap上
+      #默认30s
+      responseCacheUpdateIntervalMs: 3000  
+      #启用主动失效，并且每次主动失效检测间隔为3s
+      eviction-interval-timer-in-ms: 3000
+---
+# jar包启动时 --spring.profiles.active 的值 == xue1 时加载这些配置
+spring:
+   profiles: xue1   
+server:
+   port: 10000
+eureka:
+   client:
       serviceUrl:
-         defaultZone: http://localhost:${server.port}/eureka/
-      
-      
+         defaultZone: http://xue2:10001/eureka/ 
+---
+# jar包启动时 --spring.profiles.active 的值 == xue2 时加载这些配置
+spring:
+   profiles: xue2   
+server:
+   port: 10001
+eureka:
+   client:
+      serviceUrl:
+         defaultZone: http://xue1:10000/eureka/ 
+---
+# jar包启动时 --spring.profiles.active 的值 == xue3 时加载这些配置
+spring:
+   profiles: xue3   
+server:
+   port: 10002
+eureka:
+   client:
+      serviceUrl:
+         defaultZone: http://xue1:10000/eureka/ 
